@@ -1,6 +1,6 @@
 import React from "react";
 import { Table, Button } from "antd";
-import { getTable } from "./api/query";
+import { getTable, updateDatabase } from "./api/query";
 import { CSVLink } from "react-csv";
 import { ClimbingBoxLoader } from "react-spinners";
 
@@ -19,8 +19,6 @@ class App extends React.Component {
     this.state = {
       value: "",
       extractedTable: null,
-      extractedCSV: null,
-      flag: null,
       loading: false
     };
 
@@ -35,33 +33,34 @@ class App extends React.Component {
   async handleSubmit(event) {
     this.setState({ loading: true });
     event.preventDefault(); //onSubmit has its own internal state, and thus refreshing the page
-    var { extractedTable, extractedCSV, flag } = await getTable(
-      this.state.value
-    );
+    var { extractedTable } = await getTable(this.state.value);
     this.setState({
       extractedTable: extractedTable,
-      extractedCSV: extractedCSV,
-      flag: flag,
       loading: false
     });
+  }
+
+  async handleUpdate() {
+    console.log("Updating databse");
+    var res = await updateDatabase();
   }
 
   render() {
     const columns = [
       {
         title: "HTS Code",
-        dataIndex: "data",
-        key: "data"
+        dataIndex: "0",
+        key: "0"
       },
       {
         title: "Suffix",
-        dataIndex: "suffix",
-        key: "suffix"
+        dataIndex: "1",
+        key: "1"
       },
       {
         title: "Description",
-        dataIndex: "description",
-        key: "description"
+        dataIndex: "2",
+        key: "2"
       }
     ];
     return (
@@ -85,6 +84,16 @@ class App extends React.Component {
                   value="Submit"
                 />
               </form>
+            </div>
+            <div>
+              <Button
+                type="primary"
+                icon="api"
+                size={"large"}
+                onClick={this.handleUpdate}
+              >
+                Update Database
+              </Button>
             </div>
             {this.state.extractedCSV != null && this.state.flag === 0 && (
               <CSVLink data={this.state.extractedCSV}>
