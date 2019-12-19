@@ -33,10 +33,12 @@ class App extends React.Component {
   async handleSubmit(event) {
     this.setState({ loading: true });
     event.preventDefault(); //onSubmit has its own internal state, and thus refreshing the page
-    var { extractedTable } = await getTable(this.state.value);
+    var { extractedTable,hit_list } = await getTable(this.state.value);
+
     this.setState({
       extractedTable: extractedTable,
-      loading: false
+      loading: false,
+      hit_list: hit_list
     });
   }
 
@@ -49,20 +51,21 @@ class App extends React.Component {
     const columns = [
       {
         title: "HTS Code",
-        dataIndex: "0",
+        dataIndex: 0,
         key: "0"
       },
       {
-        title: "Suffix",
-        dataIndex: "1",
+        title: "Indent",
+        dataIndex: 1,
         key: "1"
       },
       {
         title: "Description",
-        dataIndex: "2",
+        dataIndex: 2,
         key: "2"
       }
     ];
+
     return (
       <div className="wrapper">
         <div className="main">
@@ -104,7 +107,12 @@ class App extends React.Component {
             )}
           </div>
 
-          <Table dataSource={this.state.extractedTable} columns={columns} />
+          <Table
+            dataSource={this.state.extractedTable}
+            columns={columns}
+            childrenColumnName={"9"}
+            rowClassName = {record => (this.state.hit_list.includes(record[0]) ? "test" : "test1")}
+          />
         </div>
         <div
           style={{ display: this.state.loading ? "flex" : "none" }}
