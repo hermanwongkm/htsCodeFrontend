@@ -8,12 +8,13 @@
 .title {
   display: flex;
   justify-content: center;
-  font-size: large;
+  font-size: 2em;
   font-weight: 800;
+  margin: 1em;
 }
 .wrapper__overlay {
   position: absolute;
-  background-color: rgba(32, 32, 32, 0.5);
+  background-color: rgba(32, 32, 32, 0.8);
   top: 0;
   left: 0;
   width: 100%;
@@ -23,6 +24,7 @@
   flex-direction: column;
   justify-content: center;
 }
+
 
 .wrapper {
   position: relative;
@@ -35,4 +37,18 @@
 .test{
   background-color:#D1e9FF;
   font-weight: 500;
+}
+
+.button_Container{
+  display: flex;
+  flex-direction: row;
+}
+
+.button{
+  margin:10px
+}
+
+
+.ant-btn-primary {
+    background-color: #4AA6f9
 }

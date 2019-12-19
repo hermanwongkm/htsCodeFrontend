@@ -1,8 +1,8 @@
 import React from "react";
 import { Table, Button } from "antd";
-import { getTable, updateDatabase } from "./api/query";
+import { getTable, updateDatabase, updateFromLocal} from "./api/query";
 import { CSVLink } from "react-csv";
-import { ClimbingBoxLoader } from "react-spinners";
+import { RiseLoader } from "react-spinners";
 
 import "antd/dist/antd.css";
 import "./App.css";
@@ -24,6 +24,8 @@ class App extends React.Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleUpdateLocal = this.handleUpdateLocal.bind(this);
+    this.handleUpdateOnline = this.handleUpdateOnline.bind(this);
   }
 
   handleChange(event) {
@@ -34,7 +36,6 @@ class App extends React.Component {
     this.setState({ loading: true });
     event.preventDefault(); //onSubmit has its own internal state, and thus refreshing the page
     var { extractedTable,hit_list } = await getTable(this.state.value);
-
     this.setState({
       extractedTable: extractedTable,
       loading: false,
@@ -42,10 +43,23 @@ class App extends React.Component {
     });
   }
 
-  async handleUpdate() {
-    console.log("Updating databse");
+  async handleUpdateOnline() {
+    this.setState({ loading: true });
     var res = await updateDatabase();
+    this.setState({
+      loading: !res,
+    });
   }
+
+
+  async handleUpdateLocal() {
+    this.setState({ loading: true });
+    var res = await updateFromLocal();
+    this.setState({
+      loading: !res,
+    });
+  }
+  
 
   render() {
     const columns = [
@@ -88,15 +102,27 @@ class App extends React.Component {
                 />
               </form>
             </div>
-            <div>
+        <div  className="button_Container">
+            <div className="button">
               <Button
                 type="primary"
                 icon="api"
                 size={"large"}
-                onClick={this.handleUpdate}
+                onClick={this.handleUpdateLocal}
+              >
+                Local Update
+              </Button>
+            </div>
+            <div className="button">
+              <Button
+                type="primary"
+                icon="cloud-download"
+                size={"large"}
+                onClick={this.handleUpdateOnline}
               >
                 Update Database
               </Button>
+            </div>
             </div>
             {this.state.extractedCSV != null && this.state.flag === 0 && (
               <CSVLink data={this.state.extractedCSV}>
@@ -110,8 +136,9 @@ class App extends React.Component {
           <Table
             dataSource={this.state.extractedTable}
             columns={columns}
-            childrenColumnName={"9"}
-            rowClassName = {record => (this.state.hit_list.includes(record[0]) ? "test" : "test1")}
+            childrenColumnName={"10"}
+            rowKey = {"9"}
+            rowClassName = {record => (this.state.hit_list.includes(record[9]) ? "test" : "test1")}
           />
         </div>
         <div
@@ -119,10 +146,10 @@ class App extends React.Component {
           className="wrapper__overlay"
         >
           <div className="spinner">
-            <ClimbingBoxLoader
+            <RiseLoader
               css={override}
               size={20}
-              color={"#36ffcd"}
+              color={"#4AA6F9"}
               loading={this.state.loading}
             />
           </div>

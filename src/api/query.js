@@ -9,9 +9,16 @@ export const getTable = async search => {
   };
 };
 
-export const updateDatabase = async search => {
-  const res = await axios.get(`/fetch`);
-  console.log(res);
+export const updateDatabase = async () => {
+  const res = await axios.get(`/fetch/getLatest`);
+  return {
+    res
+  };
+};
+
+
+export const updateFromLocal = async () => {
+  const res = await axios.get(`/fetch/getLocal`);
   return {
     res
   };
