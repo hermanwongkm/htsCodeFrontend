@@ -1,11 +1,15 @@
 import React from "react";
 import { Table, Button } from "antd";
-import { getTable, updateDatabase, updateFromLocal} from "./api/query";
+import { getTable, updateDatabase, updateFromLocal } from "./api/query";
 import { CSVLink } from "react-csv";
 import { RiseLoader } from "react-spinners";
 
+import { Input } from "antd";
+
 import "antd/dist/antd.css";
 import "./App.css";
+
+const { Search } = Input;
 
 const override = `
   display: block;
@@ -32,10 +36,10 @@ class App extends React.Component {
     this.setState({ value: event.target.value });
   }
 
-  async handleSubmit(event) {
+  async handleSubmit(value) {
     this.setState({ loading: true });
-    event.preventDefault(); //onSubmit has its own internal state, and thus refreshing the page
-    var { extractedTable,hit_list } = await getTable(this.state.value);
+    // event.preventDefault(); //onSubmit has its own internal state, and thus refreshing the page
+    var { extractedTable, hit_list } = await getTable(value);
     this.setState({
       extractedTable: extractedTable,
       loading: false,
@@ -47,19 +51,17 @@ class App extends React.Component {
     this.setState({ loading: true });
     var res = await updateDatabase();
     this.setState({
-      loading: !res,
+      loading: !res
     });
   }
-
 
   async handleUpdateLocal() {
     this.setState({ loading: true });
     var res = await updateFromLocal();
     this.setState({
-      loading: !res,
+      loading: !res
     });
   }
-  
 
   render() {
     const columns = [
@@ -86,43 +88,34 @@ class App extends React.Component {
           <div className="title">Harmonized Tariff Schedule Code</div>
           <div className="header">
             <div className="header__searchBox">
-              <form onSubmit={this.handleSubmit}>
-                <label>
-                  Query:
-                  <input
-                    type="text"
-                    value={this.state.value}
-                    onChange={this.handleChange}
-                  />
-                </label>
-                <input
-                  style={{ margin: "10px" }}
-                  type="submit"
-                  value="Submit"
-                />
-              </form>
+              <Search
+                placeholder="input query"
+                enterButton="Search"
+                size="large"
+                onSearch={value => this.handleSubmit(value)}
+              />
             </div>
-        <div  className="button_Container">
-            <div className="button">
-              <Button
-                type="primary"
-                icon="api"
-                size={"large"}
-                onClick={this.handleUpdateLocal}
-              >
-                Local Update
-              </Button>
-            </div>
-            <div className="button">
-              <Button
-                type="primary"
-                icon="cloud-download"
-                size={"large"}
-                onClick={this.handleUpdateOnline}
-              >
-                Update Database
-              </Button>
-            </div>
+            <div className="button_Container">
+              <div className="button">
+                <Button
+                  type="primary"
+                  icon="api"
+                  size={"large"}
+                  onClick={this.handleUpdateLocal}
+                >
+                  Local Update
+                </Button>
+              </div>
+              <div className="button">
+                <Button
+                  type="primary"
+                  icon="cloud-download"
+                  size={"large"}
+                  onClick={this.handleUpdateOnline}
+                >
+                  Update Database
+                </Button>
+              </div>
             </div>
             {this.state.extractedCSV != null && this.state.flag === 0 && (
               <CSVLink data={this.state.extractedCSV}>
@@ -137,8 +130,10 @@ class App extends React.Component {
             dataSource={this.state.extractedTable}
             columns={columns}
             childrenColumnName={"10"}
-            rowKey = {"9"}
-            rowClassName = {record => (this.state.hit_list.includes(record[9]) ? "test" : "test1")}
+            rowKey={"9"}
+            rowClassName={record =>
+              this.state.hit_list.includes(record[9]) ? "highlightHit" : "null"
+            }
           />
         </div>
         <div
