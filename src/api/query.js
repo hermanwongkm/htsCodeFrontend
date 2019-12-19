@@ -1,13 +1,18 @@
 import axios from "./index.js";
 
 export const getTable = async search => {
-  console.log("inside get table");
-  const res = await axios.get(`/search/${search}`);
-  console.log(res.data);
-  return {
-    extractedTable: res.data[0],
-    hit_list: res.data[1]
-  };
+  try {
+    const res = await axios.get(`/search/${search}`);
+    return {
+      extractedTable: res.data[0],
+      hit_list: res.data[1]
+    };
+  } catch (err) {
+    return {
+      extractedTable: [],
+      hit_list: []
+    };
+  }
 };
 
 export const updateDatabase = async () => {
