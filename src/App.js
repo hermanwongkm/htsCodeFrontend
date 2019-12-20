@@ -1,6 +1,11 @@
 import React from "react";
 import { Table, Button } from "antd";
-import { getTable, updateDatabase, updateFromLocal, uploadFromLocal } from "./api/query";
+import {
+  getTable,
+  updateDatabase,
+  updateFromLocal,
+  uploadFromLocal
+} from "./api/query";
 import { CSVLink } from "react-csv";
 import { RiseLoader } from "react-spinners";
 
@@ -25,27 +30,25 @@ class App extends React.Component {
       extractedTable: null,
       loading: false,
       hit_list: [],
-      selectedFile:null,
+      selectedFile: null
     };
 
     this.onChangeHandler = this.onChangeHandler.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleUpdateLocal = this.handleUpdateLocal.bind(this);
     this.handleUpdateOnline = this.handleUpdateOnline.bind(this);
-    this.manualUploadHandler = this.manualUploadHandler(this);
+    this.manualUploadHandler = this.manualUploadHandler.bind(this);
   }
 
   // handleChange(event) {
   //   this.setState({ value: event.target.value });
   // }
-  onChangeHandler=event=>{
-
+  onChangeHandler = event => {
     this.setState({
       selectedFile: event.target.files[0],
-      loaded: 0,
-    })
-
-}
+      loaded: 0
+    });
+  };
 
   async handleSubmit(value) {
     this.setState({ loading: true });
@@ -74,16 +77,16 @@ class App extends React.Component {
     });
   }
 
-  async manualUploadHandler(){
+  async manualUploadHandler() {
+    console.log("Upload button clicked");
     this.setState({ loading: true });
-    const data = new FormData() ;
-    data.append('file', this.state.selectedFile);
+    const data = new FormData();
+    data.append("csvFile", this.state.selectedFile);
     var res = await uploadFromLocal(data);
     this.setState({
       loading: !res
     });
-}
-
+  }
 
   render() {
     const columns = [
@@ -118,29 +121,26 @@ class App extends React.Component {
               />
             </div>
             <div className="button_Container">
-            <div className="button">
-            <button type="button" class="btn btn-success btn-block" onClick={this.manualUploadHandler}>Upload</button> 
-            <input type="file" name="file" onChange={this.onChangeHandler}/>
               <div className="button">
                 <Button
                   type="primary"
                   icon="api"
-                  size={"large"}
+                  size={"small"}
                   onClick={this.handleUpdateLocal}
                 >
                   Local Update
                 </Button>
               </div>
+
               <div className="button">
                 <Button
                   type="primary"
                   icon="cloud-download"
-                  size={"large"}
+                  size={"small"}
                   onClick={this.handleUpdateOnline}
                 >
                   Update Database
                 </Button>
-              </div>
               </div>
             </div>
             {this.state.extractedCSV != null && this.state.flag === 0 && (
@@ -150,6 +150,24 @@ class App extends React.Component {
                 </Button>
               </CSVLink>
             )}
+          </div>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <div className="button">
+              <button
+                style={{ fontSize: "0.8em" }}
+                type="button"
+                className="btn btn-success btn-block"
+                onClick={this.manualUploadHandler}
+              >
+                Upload
+              </button>
+              <input
+                style={{ fontSize: "0.8em" }}
+                type="file"
+                name="file"
+                onChange={this.onChangeHandler}
+              />
+            </div>
           </div>
           <div
             style={{
