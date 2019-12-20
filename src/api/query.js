@@ -1,6 +1,7 @@
 import axios from "./index.js";
 
 export const getTable = async search => {
+  search = search.toString().toLowerCase();
   try {
     const res = await axios.get(`/search/${search}`);
     return {

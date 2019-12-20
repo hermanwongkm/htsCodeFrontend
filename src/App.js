@@ -23,7 +23,8 @@ class App extends React.Component {
     this.state = {
       value: "",
       extractedTable: null,
-      loading: false
+      loading: false,
+      hit_list: []
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -125,7 +126,15 @@ class App extends React.Component {
               </CSVLink>
             )}
           </div>
-
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              margin: "1em"
+            }}
+          >
+            {this.state.hit_list.length} results
+          </div>
           <Table
             dataSource={this.state.extractedTable}
             columns={columns}
