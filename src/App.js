@@ -1,6 +1,6 @@
 import React from "react";
 import { Table, Button } from "antd";
-import { getTable, updateDatabase, updateFromLocal } from "./api/query";
+import { getTable, updateDatabase, updateFromLocal, uploadFromLocal } from "./api/query";
 import { CSVLink } from "react-csv";
 import { RiseLoader } from "react-spinners";
 
@@ -24,18 +24,28 @@ class App extends React.Component {
       value: "",
       extractedTable: null,
       loading: false,
-      hit_list: []
+      hit_list: [],
+      selectedFile:null,
     };
 
-    this.handleChange = this.handleChange.bind(this);
+    this.onChangeHandler = this.onChangeHandler.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleUpdateLocal = this.handleUpdateLocal.bind(this);
     this.handleUpdateOnline = this.handleUpdateOnline.bind(this);
+    this.manualUploadHandler = this.manualUploadHandler(this);
   }
 
-  handleChange(event) {
-    this.setState({ value: event.target.value });
-  }
+  // handleChange(event) {
+  //   this.setState({ value: event.target.value });
+  // }
+  onChangeHandler=event=>{
+
+    this.setState({
+      selectedFile: event.target.files[0],
+      loaded: 0,
+    })
+
+}
 
   async handleSubmit(value) {
     this.setState({ loading: true });
@@ -63,6 +73,17 @@ class App extends React.Component {
       loading: !res
     });
   }
+
+  async manualUploadHandler(){
+    this.setState({ loading: true });
+    const data = new FormData() ;
+    data.append('file', this.state.selectedFile);
+    var res = await uploadFromLocal(data);
+    this.setState({
+      loading: !res
+    });
+}
+
 
   render() {
     const columns = [
@@ -97,6 +118,9 @@ class App extends React.Component {
               />
             </div>
             <div className="button_Container">
+            <div className="button">
+            <button type="button" class="btn btn-success btn-block" onClick={this.manualUploadHandler}>Upload</button> 
+            <input type="file" name="file" onChange={this.onChangeHandler}/>
               <div className="button">
                 <Button
                   type="primary"
@@ -116,6 +140,7 @@ class App extends React.Component {
                 >
                   Update Database
                 </Button>
+              </div>
               </div>
             </div>
             {this.state.extractedCSV != null && this.state.flag === 0 && (

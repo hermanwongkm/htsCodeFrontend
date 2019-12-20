@@ -29,3 +29,8 @@ export const updateFromLocal = async () => {
     res
   };
 };
+export const uploadFromLocal= async (data) => {
+  const res = await axios.post("/upload", data, { // receive two parameter endpoint url ,form data 
+})
+return res
+};
