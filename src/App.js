@@ -14,12 +14,6 @@ import "./App.css";
 
 const { Search } = Input;
 
-const override = `
-  display: block;
-  margin: 0 auto;
-  border-color: red;
-`;
-
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -76,24 +70,6 @@ class App extends React.Component {
   };
 
   render() {
-    const columns = [
-      {
-        title: "HTS Code",
-        dataIndex: 0,
-        key: "0"
-      },
-      {
-        title: "Indent",
-        dataIndex: 1,
-        key: "1"
-      },
-      {
-        title: "Description",
-        dataIndex: 2,
-        key: "2"
-      }
-    ];
-
     return (
       <div className="wrapper">
         <div className="main">
@@ -179,5 +155,29 @@ class App extends React.Component {
     );
   }
 }
+
+const columns = [
+  {
+    title: "HTS Code",
+    dataIndex: 0,
+    key: "0"
+  },
+  {
+    title: "Indent",
+    dataIndex: 1,
+    key: "1"
+  },
+  {
+    title: "Description",
+    dataIndex: 2,
+    key: "2"
+  }
+];
+
+const override = `
+  display: block;
+  margin: 0 auto;
+  border-color: red;
+`;
 
 export default App;
