@@ -1,15 +1,13 @@
 import React from "react";
-import { Table, Button } from "antd";
+import { Table, Button, Input } from "antd";
+import { RiseLoader } from "react-spinners";
+
 import {
   getTable,
   updateDatabase,
   updateFromLocal,
   uploadFromLocal
 } from "./api/query";
-import { CSVLink } from "react-csv";
-import { RiseLoader } from "react-spinners";
-
-import { Input } from "antd";
 
 import "antd/dist/antd.css";
 import "./App.css";
@@ -32,17 +30,8 @@ class App extends React.Component {
       hit_list: [],
       selectedFile: null
     };
-
-    this.onChangeHandler = this.onChangeHandler.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleUpdateLocal = this.handleUpdateLocal.bind(this);
-    this.handleUpdateOnline = this.handleUpdateOnline.bind(this);
-    this.manualUploadHandler = this.manualUploadHandler.bind(this);
   }
 
-  // handleChange(event) {
-  //   this.setState({ value: event.target.value });
-  // }
   onChangeHandler = event => {
     this.setState({
       selectedFile: event.target.files[0],
@@ -50,35 +39,33 @@ class App extends React.Component {
     });
   };
 
-  async handleSubmit(value) {
+  handleSubmit = async value => {
     this.setState({ loading: true });
-    // event.preventDefault(); //onSubmit has its own internal state, and thus refreshing the page
     var { extractedTable, hit_list } = await getTable(value);
     this.setState({
       extractedTable: extractedTable,
       loading: false,
       hit_list: hit_list
     });
-  }
+  };
 
-  async handleUpdateOnline() {
+  handleUpdateOnline = async () => {
     this.setState({ loading: true });
     var res = await updateDatabase();
     this.setState({
       loading: !res
     });
-  }
+  };
 
-  async handleUpdateLocal() {
+  handleUpdateLocal = async () => {
     this.setState({ loading: true });
     var res = await updateFromLocal();
     this.setState({
       loading: !res
     });
-  }
+  };
 
-  async manualUploadHandler() {
-    console.log("Upload button clicked");
+  manualUploadHandler = async () => {
     this.setState({ loading: true });
     const data = new FormData();
     data.append("csvFile", this.state.selectedFile);
@@ -86,7 +73,7 @@ class App extends React.Component {
     this.setState({
       loading: !res
     });
-  }
+  };
 
   render() {
     const columns = [
@@ -112,7 +99,7 @@ class App extends React.Component {
         <div className="main">
           <div className="title">Harmonized Tariff Schedule Code</div>
           <div className="header">
-            <div className="header__searchBox">
+            <div>
               <Search
                 placeholder="input query"
                 enterButton="Search"
@@ -121,53 +108,42 @@ class App extends React.Component {
               />
             </div>
             <div className="button_Container">
-              <div className="button">
-                <Button
-                  type="primary"
-                  icon="api"
-                  size={"small"}
-                  onClick={this.handleUpdateLocal}
-                >
-                  Local Update
-                </Button>
-              </div>
-
-              <div className="button">
-                <Button
-                  type="primary"
-                  icon="cloud-download"
-                  size={"small"}
-                  onClick={this.handleUpdateOnline}
-                >
-                  Update Database
-                </Button>
-              </div>
-            </div>
-            {this.state.extractedCSV != null && this.state.flag === 0 && (
-              <CSVLink data={this.state.extractedCSV}>
-                <Button type="primary" icon="download" size={"large"}>
-                  Download
-                </Button>
-              </CSVLink>
-            )}
-          </div>
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <div className="button">
-              <button
-                style={{ fontSize: "0.8em" }}
-                type="button"
-                className="btn btn-success btn-block"
-                onClick={this.manualUploadHandler}
+              <Button
+                type="primary"
+                icon="api"
+                size={"small"}
+                onClick={this.handleUpdateLocal}
+                style={{ margin: "0.7em" }}
               >
-                Upload
-              </button>
-              <input
-                style={{ fontSize: "0.8em" }}
-                type="file"
-                name="file"
-                onChange={this.onChangeHandler}
-              />
+                Local Update
+              </Button>
+              <Button
+                type="primary"
+                icon="cloud-download"
+                size={"small"}
+                onClick={this.handleUpdateOnline}
+                style={{ margin: "0.7em" }}
+              >
+                Update Database
+              </Button>
             </div>
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <button
+              style={{ fontSize: "0.8em" }}
+              type="button"
+              className="btn btn-success btn-block"
+              onClick={this.manualUploadHandler}
+            >
+              Upload
+            </button>
+            <input
+              style={{ fontSize: "0.8em" }}
+              type="file"
+              name="file"
+              onChange={this.onChangeHandler}
+            />
           </div>
           <div
             style={{
@@ -192,14 +168,12 @@ class App extends React.Component {
           style={{ display: this.state.loading ? "flex" : "none" }}
           className="wrapper__overlay"
         >
-          <div className="spinner">
-            <RiseLoader
-              css={override}
-              size={20}
-              color={"#4AA6F9"}
-              loading={this.state.loading}
-            />
-          </div>
+          <RiseLoader
+            css={override}
+            size={20}
+            color={"#4AA6F9"}
+            loading={this.state.loading}
+          />
         </div>
       </div>
     );

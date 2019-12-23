@@ -18,17 +18,14 @@ export const getTable = async search => {
 
 export const updateDatabase = async () => {
   const res = await axios.get(`/fetch/getLatest`);
-  return {
-    res
-  };
+  return res;
 };
 
 export const updateFromLocal = async () => {
   const res = await axios.get(`/fetch/getLocal`);
-  return {
-    res
-  };
+  return res;
 };
+
 export const uploadFromLocal = async data => {
   const res = await axios.post("/upload", data, {});
   return res;
