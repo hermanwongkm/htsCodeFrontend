@@ -4,7 +4,7 @@ export const getTable = async search => {
   let regexp = /^(\d{4}|\d{3})(\.\d{2}(\.\d{2}(\.\d{2})?)?)?$/g  // This is to match the hts / codes
   search = search.toString().toLowerCase();
   // search by hts_code
-  if (search.match(regexp)!=null) {
+  if (search.match(regexp) != null) {
     try {
       console.log(search);
       const res = await axios.get(`/search/searchc/${search}`);
@@ -15,7 +15,8 @@ export const getTable = async search => {
     } catch (err) {
       return {
         extractedTable: [],
-        hit_list: []
+        hit_list: [],
+        hit_keylist:[]
       };
     }
     
