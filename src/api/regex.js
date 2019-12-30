@@ -1,3 +1,5 @@
+//  This is a redundant now.
+// This is meant for testing only.
 let str1 = "Leather bag";
 let str2 = '3210.00.00';
 let str3 = '302.84';

@@ -16,7 +16,7 @@ export const getTable = async search => {
       return {
         extractedTable: [],
         hit_list: [],
-        hit_keylist:[]
+        // hit_keylist:[]
       };
     }
     
