@@ -26,9 +26,6 @@ class App extends React.Component {
     };
   }
 
-  componentDidUpdate = () => {
-    console.log("Updated");
-  };
 
   onChangeHandler = event => {
     this.setState({
@@ -40,7 +37,7 @@ class App extends React.Component {
   handleSubmit = async value => {
     this.setState({ loading: true });
     var { extractedTable, hit_list,ancestor_list } = await getTable(value);
-    console.log(ancestor_list)
+    // console.log(ancestor_list)
     this.setState({
       extractedTable: extractedTable,
       loading: false,
