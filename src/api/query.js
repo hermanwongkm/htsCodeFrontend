@@ -10,12 +10,15 @@ export const getTable = async search => {
       const res = await axios.get(`/search/searchc/${search}`);
       return {
         extractedTable: res.data[0],
-        hit_list: res.data[1]
+        hit_list: res.data[1],
+        ancestor_list:res.data[2],
       };
     } catch (err) {
       return {
         extractedTable: [],
         hit_list: [],
+        ancestor_list:[],
+
         // hit_keylist:[]
       };
     }
@@ -25,12 +28,15 @@ export const getTable = async search => {
       const res = await axios.get(`/search/${search}`);
       return {
         extractedTable: res.data[0],
-        hit_list: res.data[1]
+        hit_list: res.data[1],
+        ancestor_list:res.data[2],
       };
     } catch (err) {
       return {
         extractedTable: [],
-        hit_list: []
+        hit_list: [],
+        ancestor_list:[],
+
       };
     }
   };

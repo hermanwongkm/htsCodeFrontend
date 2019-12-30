@@ -39,12 +39,13 @@ class App extends React.Component {
 
   handleSubmit = async value => {
     this.setState({ loading: true });
-    var { extractedTable, hit_list } = await getTable(value);
+    var { extractedTable, hit_list,ancestor_list } = await getTable(value);
+    console.log(ancestor_list)
     this.setState({
       extractedTable: extractedTable,
       loading: false,
       hit_list: hit_list,
-      expandedList: [...hit_list]
+      expandedList: ancestor_list
     });
   };
 
