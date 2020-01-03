@@ -52,6 +52,10 @@ class App extends React.Component {
     this.setState({
       loading: !res
     });
+    if(!(res.data===true)){
+      alert("Unable to update database")
+    }
+    console.log(res);
   };
 
   handleUpdateLocal = async () => {
