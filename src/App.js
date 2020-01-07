@@ -1,7 +1,9 @@
 import React from "react";
+import { remove } from "lodash";
 import { Table, Button, Input } from "antd";
 import { RiseLoader } from "react-spinners";
-import { remove } from "lodash";
+import socketIOClient from "socket.io-client";
+
 import {
   getTable,
   updateDatabase,
@@ -46,14 +48,23 @@ class App extends React.Component {
   };
 
   handleUpdateOnline = async () => {
+    const socket = socketIOClient("http://localhost:3001");
     this.setState({ loading: true });
     var res = await updateDatabase();
-    this.setState({
-      loading: false
-    });
-    if (res.data === false) {
-      alert("Unable to update database. Please try again later.");
+    if (res.data !== true) {
+      alert("Unable to send request.");
     }
+
+    socket.on("processed", res => {
+      console.log(res);
+      this.setState({
+        loading: false
+      });
+      if (res === false) {
+        alert("Unable to update database. Please try again later.");
+      }
+      socket.disconnect();
+    });
   };
 
   handleUpdateLocal = async () => {
