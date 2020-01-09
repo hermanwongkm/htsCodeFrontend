@@ -1,5 +1,6 @@
 import React from "react";
 import { remove } from "lodash";
+import * as moment from "moment";
 import { Table, Button, Input } from "antd";
 import { RiseLoader } from "react-spinners";
 import socketIOClient from "socket.io-client";
@@ -8,7 +9,8 @@ import {
   getTable,
   updateDatabase,
   updateFromLocal,
-  uploadFromLocal
+  uploadFromLocal,
+  getLastUpdate
 } from "./api/query";
 
 import "antd/dist/antd.css";
@@ -19,14 +21,20 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      status: "",
       value: "",
       extractedTable: null,
       loading: false,
       hit_list: [],
       expandedList: [], //Workaround for default expansion
-      selectedFile: null
+      selectedFile: null,
+      lastUpdated: ""
     };
   }
+
+  componentDidMount = async () => {
+    this.updateTimestamp();
+  };
 
   onChangeHandler = event => {
     this.setState({
@@ -48,23 +56,32 @@ class App extends React.Component {
   };
 
   handleUpdateOnline = async () => {
-    const socket = socketIOClient("http://localhost:3001");
+    const socket = socketIOClient("http://localhost:3001"); //This connects to socket.io
+    socket.open(); //Opens the socket manually so that there is no delay.
+    socket.on("processed", res => {
+      console.log(res);
+      this.setState({
+        loading: false,
+        status: "Searching"
+      });
+      if (res === false) {
+        alert("Unable to update database. Please try again later.");
+      }
+      this.updateTimestamp();
+      socket.disconnect();
+    });
+    socket.on("status", res => {
+      console.log(res.status);
+      this.setState({
+        status: res.status
+      });
+    });
+
     this.setState({ loading: true });
     var res = await updateDatabase();
     if (res.data !== true) {
       alert("Unable to send request.");
     }
-
-    socket.on("processed", res => {
-      console.log(res);
-      this.setState({
-        loading: false
-      });
-      if (res === false) {
-        alert("Unable to update database. Please try again later.");
-      }
-      socket.disconnect();
-    });
   };
 
   handleUpdateLocal = async () => {
@@ -108,6 +125,18 @@ class App extends React.Component {
     }
   };
 
+  updateTimestamp = async () => {
+    let timestamp = await getLastUpdate();
+    var date = moment(timestamp.data);
+    var lastUpdated = date
+      .utc()
+      .local()
+      .format("MMMM Do YYYY, h:mm:ss a");
+    this.setState({
+      lastUpdated: lastUpdated
+    });
+  };
+
   render() {
     return (
       <div className="wrapper">
@@ -122,25 +151,30 @@ class App extends React.Component {
                 onSearch={value => this.handleSubmit(value)}
               />
             </div>
-            <div className="button_Container">
-              <Button
-                type="primary"
-                icon="api"
-                size={"small"}
-                onClick={this.handleUpdateLocal}
-                style={{ margin: "0.7em" }}
-              >
-                Local Update
-              </Button>
-              <Button
-                type="primary"
-                icon="cloud-download"
-                size={"small"}
-                onClick={this.handleUpdateOnline}
-                style={{ margin: "0.7em" }}
-              >
-                Update Database
-              </Button>
+            <div>
+              <div style={{ margin: "0 0 0 0.7rem" }}>
+                Last update: {this.state.lastUpdated}
+              </div>
+              <div className="button_Container">
+                <Button
+                  type="primary"
+                  icon="api"
+                  size={"small"}
+                  onClick={this.handleUpdateLocal}
+                  style={{ margin: "0.7em" }}
+                >
+                  Local Update
+                </Button>
+                <Button
+                  type="primary"
+                  icon="cloud-download"
+                  size={"small"}
+                  onClick={this.handleUpdateOnline}
+                  style={{ margin: "0.7em" }}
+                >
+                  Update Database
+                </Button>
+              </div>
             </div>
           </div>
 
@@ -192,6 +226,9 @@ class App extends React.Component {
             color={"#4AA6F9"}
             loading={this.state.loading}
           />
+          <div style={{ color: "white", padding: "1rem" }}>
+            {this.state.status}
+          </div>
         </div>
       </div>
     );

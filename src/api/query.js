@@ -1,7 +1,7 @@
 import axios from "./index.js";
 
 export const getTable = async search => {
-  let regexp = /^(\d{4}|\d{3})(\.\d{2}(\.\d{2}(\.\d{2})?)?)?$/g  // This is to match the hts / codes
+  let regexp = /^(\d{4}|\d{3})(\.\d{2}(\.\d{2}(\.\d{2})?)?)?$/g; // This is to match the hts / codes
   search = search.toString().toLowerCase();
   // search by hts_code
   if (search.match(regexp) != null) {
@@ -11,35 +11,34 @@ export const getTable = async search => {
       return {
         extractedTable: res.data[0],
         hit_list: res.data[1],
-        ancestor_list:res.data[2],
+        ancestor_list: res.data[2]
       };
     } catch (err) {
       return {
         extractedTable: [],
         hit_list: [],
-        ancestor_list:[],
+        ancestor_list: []
 
         // hit_keylist:[]
       };
     }
-    
-  }else{ // search by keyword string
+  } else {
+    // search by keyword string
     try {
       const res = await axios.get(`/search/${search}`);
       return {
         extractedTable: res.data[0],
         hit_list: res.data[1],
-        ancestor_list:res.data[2],
+        ancestor_list: res.data[2]
       };
     } catch (err) {
       return {
         extractedTable: [],
         hit_list: [],
-        ancestor_list:[],
-
+        ancestor_list: []
       };
     }
-  };
+  }
 };
 
 export const updateDatabase = async () => {
@@ -54,5 +53,11 @@ export const updateFromLocal = async () => {
 
 export const uploadFromLocal = async data => {
   const res = await axios.post("/upload", data, {});
+  return res;
+};
+
+export const getLastUpdate = async () => {
+  const res = await axios.get(`/fetch/getLastUpdate`);
+  console.log(res);
   return res;
 };
