@@ -1,7 +1,7 @@
 import React from "react";
 import { remove } from "lodash";
 import * as moment from "moment";
-import { Table, Button, Input } from "antd";
+import { Table, Button, Input, Upload, message } from "antd";
 import { RiseLoader } from "react-spinners";
 import socketIOClient from "socket.io-client";
 
@@ -36,7 +36,27 @@ class App extends React.Component {
     this.updateTimestamp();
   };
 
+  uploadHandler = event => {
+    setTimeout(() => {
+      event.onSuccess("ok");
+    }, 0);
+    this.setState(
+      {
+        loading: true,
+        selectedFile: event.file
+      },
+      async () => {
+        const data = new FormData();
+        data.append("csvFile", this.state.selectedFile);
+        var res = await uploadFromLocal(data);
+        this.setState({ loading: !res });
+        message.success(`File uploaded successfully`);
+      }
+    );
+  };
+
   onChangeHandler = event => {
+    console.log(event);
     this.setState({
       selectedFile: event.target.files[0],
       loaded: 0
@@ -97,6 +117,7 @@ class App extends React.Component {
     const data = new FormData();
     data.append("csvFile", this.state.selectedFile);
     var res = await uploadFromLocal(data);
+    console.log(res);
     this.setState({
       loading: !res
     });
@@ -179,20 +200,24 @@ class App extends React.Component {
           </div>
 
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <button
+            {/* <Button
               style={{ fontSize: "0.8em" }}
               type="button"
               className="btn btn-success btn-block"
               onClick={this.manualUploadHandler}
             >
               Upload
-            </button>
-            <input
+            </Button> */}
+            <Upload customRequest={this.uploadHandler}>
+              <Button>Click to Upload</Button>
+            </Upload>
+            ,
+            {/* <input
               style={{ fontSize: "0.8em" }}
               type="file"
               name="file"
               onChange={this.onChangeHandler}
-            />
+            /> */}
           </div>
           <div
             style={{

@@ -58,6 +58,5 @@ export const uploadFromLocal = async data => {
 
 export const getLastUpdate = async () => {
   const res = await axios.get(`/fetch/getLastUpdate`);
-  console.log(res);
   return res;
 };
