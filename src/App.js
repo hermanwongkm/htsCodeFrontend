@@ -163,43 +163,58 @@ class App extends React.Component {
       <div className="wrapper">
         <div className="main">
           <div className="title">Harmonized Tariff Schedule Code</div>
-          <div className="header">
-            <div>
-              <Search
-                placeholder="input query"
-                enterButton="Search"
-                size="large"
-                onSearch={value => this.handleSubmit(value)}
-              />
-            </div>
-            <div>
-              <div style={{ margin: "0 0 0 0.7rem" }}>
-                Last update: {this.state.lastUpdated}
+          <div
+            stlye={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "flex-end"
+            }}
+          >
+            <div className="header">
+              <div>
+                <Search
+                  placeholder="input query"
+                  enterButton="Search"
+                  size="large"
+                  onSearch={value => this.handleSubmit(value)}
+                />
               </div>
-              <div className="button_Container">
-                <Button
-                  type="primary"
-                  icon="api"
-                  size={"small"}
-                  onClick={this.handleUpdateLocal}
-                  style={{ margin: "0.7em" }}
-                >
-                  Local Update
-                </Button>
-                <Button
-                  type="primary"
-                  icon="cloud-download"
-                  size={"small"}
-                  onClick={this.handleUpdateOnline}
-                  style={{ margin: "0.7em" }}
-                >
-                  Update Database
-                </Button>
+              <div>
+                <div style={{ margin: "0 0 0 0.7rem" }}>
+                  Last update: {this.state.lastUpdated}
+                </div>
+                <div className="button_Container">
+                  <Button
+                    type="primary"
+                    icon="api"
+                    size={"small"}
+                    onClick={this.handleUpdateLocal}
+                    style={{ margin: "0.7em" }}
+                  >
+                    Local Update
+                  </Button>
+                  <Button
+                    type="primary"
+                    icon="cloud-download"
+                    size={"small"}
+                    onClick={this.handleUpdateOnline}
+                    style={{ margin: "0.7em" }}
+                  >
+                    Update Database
+                  </Button>
+                </div>
               </div>
             </div>
+            <div>hello</div>
           </div>
 
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              padding: "1em"
+            }}
+          >
             {/* <Button
               style={{ fontSize: "0.8em" }}
               type="button"
@@ -211,7 +226,6 @@ class App extends React.Component {
             <Upload customRequest={this.uploadHandler}>
               <Button>Click to Upload</Button>
             </Upload>
-            ,
             {/* <input
               style={{ fontSize: "0.8em" }}
               type="file"
