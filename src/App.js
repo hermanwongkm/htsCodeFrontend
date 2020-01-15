@@ -43,13 +43,14 @@ class App extends React.Component {
     this.setState(
       {
         loading: true,
-        selectedFile: event.file
+        selectedFile: event.file,
+        status: "Uploading file"
       },
       async () => {
         const data = new FormData();
         data.append("csvFile", this.state.selectedFile);
         var res = await uploadFromLocal(data);
-        this.setState({ loading: !res });
+        this.setState({ loading: !res, status: "Searching" });
         message.success(`File uploaded successfully`);
       }
     );
@@ -105,10 +106,11 @@ class App extends React.Component {
   };
 
   handleUpdateLocal = async () => {
-    this.setState({ loading: true });
+    this.setState({ loading: true, status: "Running Python script" });
     var res = await updateFromLocal();
     this.setState({
-      loading: !res
+      loading: !res,
+      status: "Searching"
     });
   };
 
@@ -184,15 +186,28 @@ class App extends React.Component {
                   Last update: {this.state.lastUpdated}
                 </div>
                 <div className="button_Container">
-                  <Button
-                    type="primary"
-                    icon="api"
-                    size={"small"}
-                    onClick={this.handleUpdateLocal}
-                    style={{ margin: "0.7em" }}
-                  >
-                    Local Update
-                  </Button>
+                  <div style={{ display: "flex", flexDirection: "column" }}>
+                    <Button
+                      type="primary"
+                      icon="api"
+                      size={"small"}
+                      onClick={this.handleUpdateLocal}
+                      style={{ margin: "0.7em" }}
+                    >
+                      Local Update
+                    </Button>
+
+                    <Upload customRequest={this.uploadHandler}>
+                      <Button
+                        type="primary"
+                        icon="cloud-upload"
+                        size={"small"}
+                        style={{ margin: "0.7em" }}
+                      >
+                        Click to Upload
+                      </Button>
+                    </Upload>
+                  </div>
                   <Button
                     type="primary"
                     icon="cloud-download"
@@ -205,34 +220,8 @@ class App extends React.Component {
                 </div>
               </div>
             </div>
-            <div>hello</div>
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "flex-end",
-              padding: "1em"
-            }}
-          >
-            {/* <Button
-              style={{ fontSize: "0.8em" }}
-              type="button"
-              className="btn btn-success btn-block"
-              onClick={this.manualUploadHandler}
-            >
-              Upload
-            </Button> */}
-            <Upload customRequest={this.uploadHandler}>
-              <Button>Click to Upload</Button>
-            </Upload>
-            {/* <input
-              style={{ fontSize: "0.8em" }}
-              type="file"
-              name="file"
-              onChange={this.onChangeHandler}
-            /> */}
-          </div>
           <div
             style={{
               display: "flex",
